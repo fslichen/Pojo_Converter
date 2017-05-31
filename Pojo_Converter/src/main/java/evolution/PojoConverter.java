@@ -18,6 +18,100 @@ public class PojoConverter {
 		this.simpleDateFormat = simpleDateFormat;
 	}
 	
+	public Field fieldByMatchingFieldNameWithAlias(Class<?> clazz, Field currentField) {
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			Alias alias = field.getDeclaredAnnotation(Alias.class);
+			if (alias != null && currentField.getName().equals(alias.value())) {
+				return field;
+			}
+		}
+		return null;
+	}
+	
+	public Field fieldByMatchingAliasWithFieldName(Class<?> clazz, Field currentField) {
+		Alias alias = currentField.getDeclaredAnnotation(Alias.class);
+		if (alias == null) {
+			return null;
+		}
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			if (field.getName().equals(alias.value())) {
+				return field;
+			}
+		}
+		return null;
+	}
+	
+	public Field fieldByMatchingFieldNameWithFieldName(Class<?> clazz, Field currentField) {
+		try {
+			return clazz.getDeclaredField(currentField.getName());
+		} catch (NoSuchFieldException | SecurityException e) {
+			return null;
+		}
+	}
+	
+	public Field fieldByMatchingAliasWithAlias(Class<?> clazz, Field currentField) {
+		Alias currentAlias = currentField.getDeclaredAnnotation(Alias.class);
+		if (currentAlias == null) {
+			return null;
+		}
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			Alias alias = field.getDeclaredAnnotation(Alias.class);
+			if (alias != null && alias.value().equals(currentAlias.value())) {
+				return field;
+			}
+		}
+		return null;
+	}
+	
+	public boolean set(Field sourceField, Object sourceObject, Field targetField, Object targetObject) throws IllegalArgumentException, IllegalAccessException {
+		if (sourceField != null) {
+			sourceField.setAccessible(true);
+			Object fieldObject = sourceField.get(sourceObject);
+			if (fieldObject != null) {
+				targetField.set(targetObject, fieldObject);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public void merge(Object sourceObject, Object targetObject) {
+		Field[] fields = targetObject.getClass().getDeclaredFields();
+		for (Field targetField : fields) {
+			try {
+				targetField.setAccessible(true);
+				if (targetField.get(targetObject) == null) {// Ready to be Merged
+					// Field name matches field name.
+					Field sourceField = fieldByMatchingFieldNameWithFieldName(sourceObject.getClass(), targetField);
+					if (set(sourceField, sourceObject, targetField, targetObject)) {
+						continue;
+					}
+					// Alias matches field name.
+					sourceField = fieldByMatchingAliasWithFieldName(sourceObject.getClass(), targetField);
+					if (set(sourceField, sourceObject, targetField, targetObject)) {
+						continue;
+					}
+					// Field name matches alias.
+					sourceField = fieldByMatchingFieldNameWithAlias(sourceObject.getClass(), targetField);
+					if (set(sourceField, sourceObject, targetField, targetObject)) {
+						continue;
+					}
+					// Alias matches alias.
+					sourceField = fieldByMatchingAliasWithAlias(sourceObject.getClass(), targetField);
+					if (set(sourceField, sourceObject, targetField, targetObject)) {
+						continue;
+					}
+				}
+			} catch (Exception e) {}
+		}
+	}
+	
 	public <T> T sourceAliasConvert(Object sourceObject, Class<T> targetClass) throws Exception {
 		Field[] sourceFields = sourceObject.getClass().getDeclaredFields();
 		Map<String, Map<String, Field>> fieldAndAliasFieldMap = fieldAndAliasFieldMap(sourceFields);

@@ -40,6 +40,6 @@ public class AnyDto {
 
 	@Override
 	public String toString() {
-		return "AnyDto [name=" + name + ", date=" + date + "]";
+		return "AnyDto [name=" + name + ", date=" + date + ", decimal=" + decimal + ", integer=" + integer + "]";
 	}
 }
