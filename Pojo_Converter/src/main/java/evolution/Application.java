@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import evolution.dto.AlphaDto;
-import evolution.dto.AnotherDto;
-import evolution.dto.AnyDto;
 import evolution.dto.BetaDto;
 
 public class Application {
@@ -36,6 +34,10 @@ public class Application {
 		PojoConverter c = new PojoConverter(new SimpleDateFormat("yyyy-MM-dd"));
 		AlphaDto alpha = new AlphaDto();
 		alpha.setName("Chen");
+		alpha.setDecimal("3.14");
+		alpha.setGender("M");
+		alpha.setMyHobby("Badminton");
+		alpha.setA(new Date());
 		BetaDto beta = new BetaDto();
 		c.merge(alpha, beta);
 		System.out.println(beta);

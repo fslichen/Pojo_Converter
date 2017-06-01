@@ -1,6 +1,7 @@
 package evolution;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -69,12 +70,27 @@ public class PojoConverter {
 		return null;
 	}
 	
-	public boolean set(Field sourceField, Object sourceObject, Field targetField, Object targetObject) throws IllegalArgumentException, IllegalAccessException {
+	public boolean set(Field sourceField, Object sourceObject, Field targetField, Object targetObject) throws Exception {
 		if (sourceField != null) {
 			sourceField.setAccessible(true);
-			Object fieldObject = sourceField.get(sourceObject);
-			if (fieldObject != null) {
-				targetField.set(targetObject, fieldObject);
+			Object sourceFieldObject = sourceField.get(sourceObject);
+			if (sourceFieldObject != null) {
+				Class<?> sourceFieldClass = sourceField.getType();
+				Class<?> targetFieldClass = targetField.getType();
+				if (sourceFieldClass == targetFieldClass) {
+					targetField.set(targetObject, sourceFieldObject);
+				} else if (sourceFieldClass == String.class) {
+					Object revisedSourceFieldObject = null;
+					String sourceFieldObjectInString = sourceFieldObject.toString();
+					if (targetFieldClass == int.class || targetFieldClass == Integer.class) {
+						revisedSourceFieldObject = new Integer(sourceFieldObjectInString);
+					} else if (targetFieldClass == double.class || targetFieldClass == Double.class) {
+						revisedSourceFieldObject = new Double(sourceFieldObjectInString);
+					} else if (targetFieldClass == Date.class) {
+						revisedSourceFieldObject = simpleDateFormat.parse(sourceFieldObjectInString);
+					}
+					targetField.set(targetObject, revisedSourceFieldObject);
+				}
 				return true;
 			}
 		}
