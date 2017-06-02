@@ -5,6 +5,7 @@ import java.util.Date;
 
 import evolution.dto.AlphaDto;
 import evolution.dto.BetaDto;
+import evolution.dto.SourceDto;
 
 public class Application {
 	public static void main(String[] args) throws Exception {
@@ -38,6 +39,11 @@ public class Application {
 		alpha.setGender("M");
 		alpha.setMyHobby("Badminton");
 		alpha.setA(new Date());
+		alpha.setNumber(4);
+		SourceDto sourceDto = new SourceDto();
+		sourceDto.setName("Ling");
+		sourceDto.setGender("F");
+		alpha.setSourceDto(sourceDto);
 		BetaDto beta = new BetaDto();
 		c.merge(alpha, beta);
 		System.out.println(beta);

@@ -1,7 +1,6 @@
 package evolution;
 
 import java.lang.reflect.Field;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -88,8 +87,14 @@ public class PojoConverter {
 						revisedSourceFieldObject = new Double(sourceFieldObjectInString);
 					} else if (targetFieldClass == Date.class) {
 						revisedSourceFieldObject = simpleDateFormat.parse(sourceFieldObjectInString);
-					}
+					} 
 					targetField.set(targetObject, revisedSourceFieldObject);
+				} else if (targetFieldClass == String.class) {
+					targetField.set(targetObject, sourceFieldObject.toString());
+				} else {
+					Object targetFieldObject = targetFieldClass.newInstance();
+					merge(sourceFieldObject, targetFieldObject);
+					targetField.set(targetObject, targetFieldObject);
 				}
 				return true;
 			}

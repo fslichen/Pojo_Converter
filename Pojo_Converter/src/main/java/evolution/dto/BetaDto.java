@@ -12,6 +12,22 @@ public class BetaDto {
 	private String hobby;
 	@Alias("date")
 	private Date b;
+	@Alias("number")
+	private String intNumber;
+	@Alias("dto")
+	private TargetDto targetDto;
+	public TargetDto getTargetDto() {
+		return targetDto;
+	}
+	public void setTargetDto(TargetDto targetDto) {
+		this.targetDto = targetDto;
+	}
+	public String getIntNumber() {
+		return intNumber;
+	}
+	public void setIntNumber(String intNumber) {
+		this.intNumber = intNumber;
+	}
 	public Date getB() {
 		return b;
 	}
@@ -45,6 +61,6 @@ public class BetaDto {
 	@Override
 	public String toString() {
 		return "BetaDto [nickName=" + nickName + ", gender=" + gender + ", decimal=" + decimal + ", hobby=" + hobby
-				+ ", b=" + b + "]";
+				+ ", b=" + b + ", intNumber=" + intNumber + ", targetDto=" + targetDto + "]";
 	}
 }

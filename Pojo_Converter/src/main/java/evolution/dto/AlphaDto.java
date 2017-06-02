@@ -10,6 +10,21 @@ public class AlphaDto {
 	private String gender;
 	private String decimal;
 	private String myHobby;
+	private int number;
+	@Alias("dto")
+	private SourceDto sourceDto;
+	public SourceDto getSourceDto() {
+		return sourceDto;
+	}
+	public void setSourceDto(SourceDto sourceDto) {
+		this.sourceDto = sourceDto;
+	}
+	public int getNumber() {
+		return number;
+	}
+	public void setNumber(int number) {
+		this.number = number;
+	}
 	@Alias("date")
 	private Date a;
 	public Date getA() {
@@ -45,6 +60,6 @@ public class AlphaDto {
 	@Override
 	public String toString() {
 		return "AlphaDto [name=" + name + ", gender=" + gender + ", decimal=" + decimal + ", myHobby=" + myHobby
-				+ ", a=" + a + "]";
+				+ ", number=" + number + ", sourceDto=" + sourceDto + ", a=" + a + "]";
 	}
 }

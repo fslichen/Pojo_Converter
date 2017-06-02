@@ -3,6 +3,10 @@ package evolution.dto;
 import evolution.Alias;
 
 public class TargetDto {
+	@Override
+	public String toString() {
+		return "TargetDto [nickName=" + nickName + ", myGender=" + myGender + "]";
+	}
 	@Alias("name")
 	private String nickName;
 	private String myGender;
