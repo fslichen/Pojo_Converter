@@ -30,6 +30,10 @@ public class PojoConverter {
 		return null;
 	}
 	
+	public Field sourceFieldByTargetField(Field currentField, Map<String, Field> sourceFieldMap) {
+		return sourceFieldMap.get(currentField.getName());
+	}
+	
 	public Field fieldByMatchingAliasWithFieldName(Class<?> clazz, Field currentField) {
 		Alias alias = currentField.getDeclaredAnnotation(Alias.class);
 		if (alias == null) {
@@ -43,6 +47,14 @@ public class PojoConverter {
 			}
 		}
 		return null;
+	}
+	
+	public Field sourceFieldByTargetAliasField(Field currentField, Map<String, Field> sourceFieldMap) {
+		Alias alias = currentField.getDeclaredAnnotation(Alias.class);
+		if (alias == null) {
+			return null;
+		}
+		return sourceFieldMap.get(alias.value());
 	}
 	
 	public Field fieldByMatchingFieldNameWithFieldName(Class<?> clazz, Field currentField) {
@@ -103,28 +115,31 @@ public class PojoConverter {
 	}
 	
 	public void merge(Object sourceObject, Object targetObject) {
+		Map<String, Map<String, Field>> sourceFieldAndAliasFieldMap = fieldAndAliasFieldMap(sourceObject.getClass().getDeclaredFields());
+		Map<String, Field> sourceFieldMap = sourceFieldAndAliasFieldMap.get("fieldMap");
+		Map<String, Field> sourceAliasFieldMap = sourceFieldAndAliasFieldMap.get("aliasFieldMap");
 		Field[] fields = targetObject.getClass().getDeclaredFields();
 		for (Field targetField : fields) {
 			try {
 				targetField.setAccessible(true);
 				if (targetField.get(targetObject) == null) {// Ready to be Merged
 					// Field name matches field name.
-					Field sourceField = fieldByMatchingFieldNameWithFieldName(sourceObject.getClass(), targetField);
+					Field sourceField = sourceFieldByTargetField(targetField, sourceFieldMap);
 					if (set(sourceField, sourceObject, targetField, targetObject)) {
 						continue;
 					}
 					// Alias matches field name.
-					sourceField = fieldByMatchingAliasWithFieldName(sourceObject.getClass(), targetField);
+					sourceField = sourceFieldByTargetAliasField(targetField, sourceFieldMap);
 					if (set(sourceField, sourceObject, targetField, targetObject)) {
 						continue;
 					}
 					// Field name matches alias.
-					sourceField = fieldByMatchingFieldNameWithAlias(sourceObject.getClass(), targetField);
+					sourceField = sourceFieldByTargetField(targetField, sourceAliasFieldMap);
 					if (set(sourceField, sourceObject, targetField, targetObject)) {
 						continue;
 					}
 					// Alias matches alias.
-					sourceField = fieldByMatchingAliasWithAlias(sourceObject.getClass(), targetField);
+					sourceField = sourceFieldByTargetAliasField(targetField, sourceAliasFieldMap);
 					if (set(sourceField, sourceObject, targetField, targetObject)) {
 						continue;
 					}
