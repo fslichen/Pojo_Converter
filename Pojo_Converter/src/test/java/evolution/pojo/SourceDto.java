@@ -1,6 +1,6 @@
-package evolution.dto;
+package evolution.pojo;
 
-import evolution.Alias;
+import evolution.annotation.Alias;
 
 public class SourceDto {
 	@Override

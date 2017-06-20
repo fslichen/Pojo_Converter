@@ -1,8 +1,8 @@
-package evolution.dto;
+package evolution.pojo;
 
 import java.util.Date;
 
-import evolution.Alias;
+import evolution.annotation.Alias;
 
 public class AlphaDto {
 	@Alias("nickName")

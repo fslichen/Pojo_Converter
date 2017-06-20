@@ -1,4 +1,4 @@
-package evolution.dto;
+package evolution.pojo;
 
 public class AnyDto {
 	private String name;

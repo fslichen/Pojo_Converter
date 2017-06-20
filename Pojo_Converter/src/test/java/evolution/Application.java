@@ -3,12 +3,15 @@ package evolution;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import evolution.dto.AlphaDto;
-import evolution.dto.BetaDto;
-import evolution.dto.SourceDto;
+import org.junit.Test;
+
+import evolution.pojo.AlphaDto;
+import evolution.pojo.BetaDto;
+import evolution.pojo.SourceDto;
 
 public class Application {
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void test() throws Exception {
 //		// Alias on Target
 //		AnyDto anyDto = new AnyDto();
 //		anyDto.setName("Chen");

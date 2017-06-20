@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import evolution.annotation.Alias;
+
 public class PojoConverter {
 	private SimpleDateFormat simpleDateFormat;
 	
